@@ -17,6 +17,7 @@ public class CustomerEntity {
 
     private String lastName;
 
+    @Column(name = "phone", unique = true, length = 20)
     private String phone;
 
     private LocalDate dateOfBirth;

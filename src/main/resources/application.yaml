@@ -1,3 +1,33 @@
+server:
+  port: 8080
+---
 spring:
   application:
     name: yourmenu
+  dataSource:
+    url: jdbc:postgresql://localhost:5432/db_yourmenu
+    username: admin
+    password: suamaeeminha
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  web:
+    error:
+      include-stacktrace: on_param
+---
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: TRACE
+---
+management:
+  endpoints:
+    web:
+      exposure:
+        include: info, health, metrics

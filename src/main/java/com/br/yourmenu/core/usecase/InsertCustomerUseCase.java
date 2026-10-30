@@ -9,7 +9,6 @@ public class InsertCustomerUseCase {
 
     private final CustomerGateway customerGateway;
 
-
     public InsertCustomerUseCase(CustomerGateway customerGateway) {
         this.customerGateway = customerGateway;
     }

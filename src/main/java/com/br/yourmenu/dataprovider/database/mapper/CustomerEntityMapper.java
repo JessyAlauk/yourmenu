@@ -3,6 +3,10 @@ package com.br.yourmenu.dataprovider.database.mapper;
 import com.br.yourmenu.core.domain.CustomerDomain;
 import com.br.yourmenu.dataprovider.database.entity.CustomerEntity;
 
+import javax.swing.text.html.Option;
+import java.util.List;
+import java.util.Optional;
+
 public final class CustomerEntityMapper {
 
     private CustomerEntityMapper() {
@@ -23,4 +27,5 @@ public final class CustomerEntityMapper {
                 customerDomain.phone(),
                 customerDomain.dateOfBirth());
     }
+
 }
