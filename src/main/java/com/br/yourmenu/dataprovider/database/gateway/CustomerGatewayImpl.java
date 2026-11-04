@@ -1,6 +1,8 @@
 package com.br.yourmenu.dataprovider.database.gateway;
 
+import ch.qos.logback.classic.spi.IThrowableProxy;
 import com.br.yourmenu.core.domain.CustomerDomain;
+import com.br.yourmenu.core.exception.CustomerNotFoundException;
 import com.br.yourmenu.core.gateway.CustomerGateway;
 import com.br.yourmenu.dataprovider.database.mapper.CustomerEntityMapper;
 import com.br.yourmenu.dataprovider.database.repository.CustomerRepository;
@@ -40,8 +42,8 @@ public class CustomerGatewayImpl implements CustomerGateway {
 
     @Override
     public Optional<CustomerDomain> findById(UUID id) {
-        return customerRepository.findById(id).
-                map(CustomerEntityMapper::toCustomerDomain);
+        return customerRepository.findById(id)
+                .map(CustomerEntityMapper::toCustomerDomain);
     }
 
     @Override
@@ -50,5 +52,28 @@ public class CustomerGatewayImpl implements CustomerGateway {
                 .stream()
                 .map(CustomerEntityMapper::toCustomerDomain)
                 .toList();
+    }
+
+    @Override
+    public CustomerDomain updateCustomer(CustomerDomain customerDomain) {
+        var customer = findById(customerDomain.customerId())
+                .orElseThrow(() -> new CustomerNotFoundException(customerDomain.customerId()));
+
+        var updatedCustomer = new CustomerDomain(
+                customer.customerId(),
+                customerDomain.firstName(),
+                customerDomain.lastName(),
+                customerDomain.phone(),
+                customerDomain.dateOfBirth()
+        );
+        return save(updatedCustomer);
+    }
+
+    @Override
+    public void deleteCustomer(UUID id) {
+        var customer = findById(id)
+                .orElseThrow(() -> new CustomerNotFoundException(id));
+        var customerEntity = CustomerEntityMapper.toCustomerEntity(customer);
+        customerRepository.delete(customerEntity);
     }
 }

@@ -1,11 +1,9 @@
 package com.br.yourmenu.entrypoint.controller;
 
-import com.br.yourmenu.core.usecase.FindAllUseCase;
-import com.br.yourmenu.core.usecase.FindCustomerByFirstNameUseCase;
-import com.br.yourmenu.core.usecase.FindCustomerByIdUseCase;
-import com.br.yourmenu.core.usecase.InsertCustomerUseCase;
+import com.br.yourmenu.core.usecase.*;
 import com.br.yourmenu.entrypoint.controller.dto.mapper.CustomerMapper;
 import com.br.yourmenu.entrypoint.controller.dto.requests.PostCustomerRequestDTO;
+import com.br.yourmenu.entrypoint.controller.dto.requests.PutCustomerRequestDTO;
 import com.br.yourmenu.entrypoint.controller.dto.responses.GetCustomerResponseDTO;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -27,13 +25,19 @@ public class CustomerController {
 
     private final FindCustomerByFirstNameUseCase findCustomerByFirstNameUseCase;
 
+    private final UpdateCustomerUseCase updateCustomerUseCase;
+
+    private final DeleteCustomerUseCase deleteCustomerUseCase;
+
     public CustomerController(InsertCustomerUseCase insertCustomerUseCase,
                               FindCustomerByIdUseCase findCustomerByIdUseCase,
-                              FindAllUseCase findAllUseCase, FindCustomerByFirstNameUseCase findCustomerByFirstNameUseCase) {
+                              FindAllUseCase findAllUseCase, FindCustomerByFirstNameUseCase findCustomerByFirstNameUseCase, UpdateCustomerUseCase updateCustomerUseCase, DeleteCustomerUseCase deleteCustomerUseCase) {
         this.insertCustomerUseCase = insertCustomerUseCase;
         this.findCustomerByIdUseCase = findCustomerByIdUseCase;
         this.findAllUseCase = findAllUseCase;
         this.findCustomerByFirstNameUseCase = findCustomerByFirstNameUseCase;
+        this.updateCustomerUseCase = updateCustomerUseCase;
+        this.deleteCustomerUseCase = deleteCustomerUseCase;
     }
 
     @PostMapping
@@ -69,5 +73,19 @@ public class CustomerController {
                 .map(CustomerMapper::toResponse)
                 .toList();
         return ResponseEntity.ok().body(customersResponse);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<GetCustomerResponseDTO> update(@PathVariable UUID id, @RequestBody @Valid PutCustomerRequestDTO customerRequest){
+        var customer = CustomerMapper.toSave(customerRequest, id);
+        var customerMapper = updateCustomerUseCase.execute(customer);
+        var response = CustomerMapper.toResponse(customerMapper);
+        return ResponseEntity.ok().body(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable @Valid UUID id){
+        deleteCustomerUseCase.execute(id);
+        return ResponseEntity.noContent().build();
     }
 }

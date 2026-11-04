@@ -2,6 +2,7 @@ package com.br.yourmenu.entrypoint.controller.dto.mapper;
 
 import com.br.yourmenu.core.domain.CustomerDomain;
 import com.br.yourmenu.entrypoint.controller.dto.requests.PostCustomerRequestDTO;
+import com.br.yourmenu.entrypoint.controller.dto.requests.PutCustomerRequestDTO;
 import com.br.yourmenu.entrypoint.controller.dto.responses.GetCustomerResponseDTO;
 
 import java.util.UUID;
@@ -19,12 +20,12 @@ public final class CustomerMapper {
                 postCustomerRequestDTO.dateOfBirth());
     }
 
-    public static CustomerDomain toSave(PostCustomerRequestDTO postCustomerRequestDTO, UUID id){
+    public static CustomerDomain toSave(PutCustomerRequestDTO putCustomerRequestDTO, UUID id){
         return new CustomerDomain(id,
-                postCustomerRequestDTO.firstName(),
-                postCustomerRequestDTO.lastName(),
-                postCustomerRequestDTO.phone(),
-                postCustomerRequestDTO.dateOfBirth());
+                putCustomerRequestDTO.firstName(),
+                putCustomerRequestDTO.lastName(),
+                putCustomerRequestDTO.phone(),
+                putCustomerRequestDTO.dateOfBirth());
     }
 
     public static GetCustomerResponseDTO toResponse(CustomerDomain customerDomain){

@@ -1,6 +1,7 @@
 package com.br.yourmenu.core.gateway;
 
 import com.br.yourmenu.core.domain.CustomerDomain;
+import com.br.yourmenu.entrypoint.controller.dto.mapper.CustomerMapper;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,5 +16,9 @@ public interface CustomerGateway {
     Optional<CustomerDomain> findById(UUID id);
 
     List<CustomerDomain> findByFirstName(String firstName);
+
+    CustomerDomain updateCustomer(CustomerDomain customerDomain);
+
+    void deleteCustomer(UUID id);
 
 }

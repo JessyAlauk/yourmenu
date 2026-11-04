@@ -4,7 +4,7 @@ import java.util.UUID;
 
 public class CustomerNotFoundException extends RuntimeException {
 
-    private static final String DEFAULT_MESSAGE = "Customer not found by id: %d";
+    private static final String DEFAULT_MESSAGE = "Customer not found by id: %s";
 
     public CustomerNotFoundException(UUID id) {
         super(String.format(DEFAULT_MESSAGE, id));
