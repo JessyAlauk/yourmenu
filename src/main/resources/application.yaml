@@ -17,6 +17,8 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
   web:
+    resources:
+      add-mappings: false
     error:
       include-stacktrace: on_param
 ---

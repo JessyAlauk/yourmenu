@@ -5,6 +5,9 @@ import com.br.yourmenu.entrypoint.controller.dto.mapper.CustomerMapper;
 import com.br.yourmenu.entrypoint.controller.dto.requests.PostCustomerRequestDTO;
 import com.br.yourmenu.entrypoint.controller.dto.requests.PutCustomerRequestDTO;
 import com.br.yourmenu.entrypoint.controller.dto.responses.GetCustomerResponseDTO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,8 +43,21 @@ public class CustomerController {
         this.deleteCustomerUseCase = deleteCustomerUseCase;
     }
 
+    @GetMapping({"/favicon.ico", "/actuator/favicon.ico"})
+    public ResponseEntity<Void> disableFavicon() {
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
     @PostMapping
-    public ResponseEntity<GetCustomerResponseDTO> save(@RequestBody @Valid PostCustomerRequestDTO customerRequest){
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Usuário criado com sucesso!"),
+            @ApiResponse(responseCode = "400", description = "Erro de validação nos dados enviados"),
+            @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
+    })
+    @Operation(summary = "Criar usuário novo",
+            description = "Crie um usuário novo, sem repetir o numero de telefone.",
+            tags = {"customer"})
+    public ResponseEntity<GetCustomerResponseDTO> save(@RequestBody @Valid PostCustomerRequestDTO customerRequest) {
         var customer = CustomerMapper.toSave(customerRequest);
         var customerMapper = insertCustomerUseCase.execute(customer);
         var response = CustomerMapper.toResponse(customerMapper);
@@ -49,14 +65,20 @@ public class CustomerController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<GetCustomerResponseDTO> findById(@PathVariable UUID id){
+    @Operation(summary = "Buscar usuário por id",
+            description = "Buscar usuario por id, deve estar no formato UUID",
+            tags = {"customer"})
+    public ResponseEntity<GetCustomerResponseDTO> findById(@PathVariable UUID id) {
         var customer = findCustomerByIdUseCase.execute(id);
         var customerResponse = CustomerMapper.toResponse(customer);
         return ResponseEntity.ok().body(customerResponse);
     }
 
     @GetMapping
-    public ResponseEntity<List<GetCustomerResponseDTO>> findAll(){
+    @Operation(summary = "Buscar usuário por id",
+            description = "Buscar usuario por id, deve estar no formato UUID",
+            tags = {"customer"})
+    public ResponseEntity<List<GetCustomerResponseDTO>> findAll() {
         var customers = findAllUseCase.execute();
         var customersResponse = customers
                 .stream()
@@ -66,7 +88,10 @@ public class CustomerController {
     }
 
     @GetMapping("/findByName")
-    public ResponseEntity<List<GetCustomerResponseDTO>> findByFirstName(@RequestParam(name = "name") String firstName){
+    @Operation(summary = "Buscar usuários por primeiro nome",
+            description = "Retorna uma lista de usuarios com o primeiro nome informado",
+            tags = {"customer"})
+    public ResponseEntity<List<GetCustomerResponseDTO>> findByFirstName(@RequestParam(name = "name") String firstName) {
         var customers = findCustomerByFirstNameUseCase.execute(firstName);
         var customersResponse = customers
                 .stream()
@@ -76,7 +101,15 @@ public class CustomerController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<GetCustomerResponseDTO> update(@PathVariable UUID id, @RequestBody @Valid PutCustomerRequestDTO customerRequest){
+    @Operation(summary = "Altera informações do usuário",
+            description = "Altera informações do usuario informado por id.",
+            tags = {"customer"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuário alterado com sucesso!"),
+            @ApiResponse(responseCode = "400", description = "Erro de validação nos dados enviados"),
+            @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
+    })
+    public ResponseEntity<GetCustomerResponseDTO> update(@PathVariable UUID id, @RequestBody @Valid PutCustomerRequestDTO customerRequest) {
         var customer = CustomerMapper.toSave(customerRequest, id);
         var customerMapper = updateCustomerUseCase.execute(customer);
         var response = CustomerMapper.toResponse(customerMapper);
@@ -84,7 +117,15 @@ public class CustomerController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable @Valid UUID id){
+    @Operation(summary = "Deleta usuário por id",
+            description = "Deleta o usuario informado.",
+            tags = {"customer"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Usuário deletado."),
+            @ApiResponse(responseCode = "400", description = "Usuário inexistente na base de dados"),
+            @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
+    })
+    public ResponseEntity<Void> delete(@PathVariable @Valid UUID id) {
         deleteCustomerUseCase.execute(id);
         return ResponseEntity.noContent().build();
     }

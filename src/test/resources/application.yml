@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: springboot2
+  dataSource:
+    url: jdbc:h2:mem:yourmenu
+    username: admin
+    password: suamaeeminha
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
