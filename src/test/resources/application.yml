@@ -1,11 +1,14 @@
 spring:
   application:
     name: springboot2
-  dataSource:
+  flyway:
+    enabled: false
+  datasource:
     url: jdbc:h2:mem:yourmenu
-    username: admin
-    password: suamaeeminha
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
   jpa:
-    hibernate:
-      ddl-auto: update
     show-sql: true
+    hibernate:
+      ddl-auto: 'create-drop'

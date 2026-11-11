@@ -1,17 +1,16 @@
 package com.br.yourmenu.dataprovider.database.gateway;
 
-import ch.qos.logback.classic.spi.IThrowableProxy;
 import com.br.yourmenu.core.domain.CustomerDomain;
 import com.br.yourmenu.core.exception.CustomerNotFoundException;
 import com.br.yourmenu.core.gateway.CustomerGateway;
 import com.br.yourmenu.dataprovider.database.mapper.CustomerEntityMapper;
 import com.br.yourmenu.dataprovider.database.repository.CustomerRepository;
-import com.fasterxml.jackson.databind.introspect.TypeResolutionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -26,8 +25,13 @@ public class CustomerGatewayImpl implements CustomerGateway {
     }
 
     @Override
-    public CustomerDomain save(CustomerDomain customerDomain) {
-        var customer = CustomerEntityMapper.toCustomerEntity(customerDomain);
+    public CustomerDomain save(CustomerDomain domain) {
+
+        if (Objects.isNull(domain)) {
+            throw new IllegalArgumentException("Oops!, param domain cannot be null");
+        }
+
+        var customer = CustomerEntityMapper.toCustomerEntity(domain);
         var customerEntity = customerRepository.save(customer);
         return CustomerEntityMapper.toCustomerDomain(customerEntity);
     }

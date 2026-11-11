@@ -1,6 +1,11 @@
 package com.br.yourmenu.dataprovider.database.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -13,13 +18,16 @@ public class CustomerEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID customerId;
 
+    @Column(nullable = false)
     private String firstName;
 
+    @Column(nullable = false)
     private String lastName;
 
-    @Column(name = "phone", unique = true, length = 20)
+    @Column(name = "phone", unique = true, length = 20, nullable = false)
     private String phone;
 
+    @Column(nullable = false)
     private LocalDate dateOfBirth;
 
     public CustomerEntity() {
